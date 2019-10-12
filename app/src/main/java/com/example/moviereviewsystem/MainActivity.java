@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.Window;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.widget.Toolbar;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerAdapter.L
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
 
         floatingActionButton=findViewById(R.id.addButton);
@@ -75,8 +77,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerAdapter.L
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
+                movieData.clear();
+
                 for(DataSnapshot data: dataSnapshot.getChildren())
                 {
+
                     Log.d(TAG, "data value: " + data);
 
                     String category = String.valueOf(data.child("Category").getValue());

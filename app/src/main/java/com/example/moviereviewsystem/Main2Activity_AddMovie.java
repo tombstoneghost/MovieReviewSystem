@@ -27,13 +27,14 @@ import java.util.List;
 
 public class Main2Activity_AddMovie extends AppCompatActivity {
 
+    String selectedItemText;
 
     EditText movieTitle, releaseYear, Description;
     RatingBar ratingBar;
 
     Button saveDetails, cancelButton;
 
-    Spinner spinnerCategory, spinnerImage;
+    Spinner spinnerCategory;
 
     DatabaseReference databaseReference;
 
@@ -56,10 +57,10 @@ public class Main2Activity_AddMovie extends AppCompatActivity {
 
         databaseReference = FirebaseDatabase.getInstance().getReference().child("movie_review_system");
 
-        spinnerCategory = (Spinner) findViewById(R.id.spinnerCategory);
+        spinnerCategory = findViewById(R.id.spinnerCategory);
 
 
-        String genres[] = new String[] {
+        String[] genres = new String[] {
                 "Select a Genre",
                 "Action",
                 "Adventure",
@@ -73,59 +74,32 @@ public class Main2Activity_AddMovie extends AppCompatActivity {
                 "Sci-Fi",
                 "Thriller" };
 
-        final List<String> genreList = new ArrayList<>(Arrays.asList(genres));
+        List<String> genreList = new ArrayList<>(Arrays.asList(genres));
 
-        final ArrayAdapter<String>  spinnerArrayAdapter = new ArrayAdapter<String>(this, R.layout.spinner_list,genreList){
-            @Override
-            public boolean isEnabled(int position)
-            {
-                if(position == 0)
-                        return  false;
-                else
-                        return  true;
-            }
+//        ArrayAdapter<String>  spinnerArrayAdapter = new ArrayAdapter<String>(this,
+//                , genreList);
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, genreList);
 
-            @Override
-            public View getDropDownView(int position, View convertView, ViewGroup parent)
-            {
-                View view = super.getDropDownView(position, convertView, parent);
-                TextView textView = (TextView) view;
-                if(position == 0)
-                {
-                    textView.setTextColor(Color.GRAY);
-                }
-                else
-                {
-                    textView.setTextColor(Color.BLACK);
-                }
-                return  view;
-            }
-        };
-
-        spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_list);
+        spinnerArrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         spinnerCategory.setAdapter(spinnerArrayAdapter);
+
+        spinnerCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedItemText = (String) parent.getItemAtPosition(position);
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         saveDetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
-                spinnerCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        String selectedItemText = (String) parent.getItemAtPosition(position);
-
-                        if(position>0)
-                        {
-                            movieDetails.put("Category", selectedItemText);
-                        }
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-
-                    }
-                });
 
                 String title = movieTitle.getText().toString();
                 int release = Integer.parseInt(releaseYear.getText().toString());
@@ -136,6 +110,7 @@ public class Main2Activity_AddMovie extends AppCompatActivity {
                 movieDetails.put("ReleaseYear", release);
                 movieDetails.put("Rating", ratings);
                 movieDetails.put("Description",description);
+                movieDetails.put("Category",selectedItemText);
 
                 databaseReference.push().setValue(movieDetails);
 
@@ -143,6 +118,13 @@ public class Main2Activity_AddMovie extends AppCompatActivity {
 
                 finish();
 
+            }
+        });
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
 

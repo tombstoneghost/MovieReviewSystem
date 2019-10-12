@@ -54,7 +54,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MovieV
         Movie_Details movie = movieArrayList.get(position);
 
         holder.movieTitle.setText(movie.Title);
-        holder.releaseYear.setText(movie.releaseYear);
+        holder.releaseYear.setText("Year: "+movie.releaseYear+"\nCategory: "+movie.Category);
+        holder.rating.setText(""+movie.rating+"/5");
+
     }
 
     @Override
@@ -65,20 +67,24 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MovieV
     public interface ListItemClickListner {
     }
 
-    public class MovieViewHolder extends RecyclerView.ViewHolder {
+    public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        TextView movieTitle, releaseYear;
-        RatingBar rating;
+        TextView movieTitle, releaseYear, rating;
 
         public MovieViewHolder(@NonNull View itemView) {
             super(itemView);
 
 
-            movieTitle.findViewById(R.id.recycler_title);
-            releaseYear.findViewById(R.id.recycler_release);
-            rating.findViewById(R.id.recycler_rating);
+            movieTitle = itemView.findViewById(R.id.recycler_title);
+            releaseYear = itemView.findViewById(R.id.recycler_release);
+            rating=itemView.findViewById(R.id.recycler_rating);
 
-            itemView.setOnClickListener((View.OnClickListener) this);
+            itemView.setOnClickListener(this);
+
+        }
+
+        @Override
+        public void onClick(View v) {
 
         }
     }
